@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import sys
 import csv
 
@@ -9,7 +11,9 @@ csv.field_size_limit(sys.maxint)
 # @params
 # refer_list: the list referred to
 # key,key2: column name of csv file to check the value in the refer_list or not
-def csv_match(refer_list,key,input_file,output_file):
+
+
+def csv_match(refer_list, key, input_file, output_file):
     with open(input_file, 'rb') as f:
         reader = csv.DictReader(f)
         rows = [row for row in reader if row[key] in set(refer_list)]

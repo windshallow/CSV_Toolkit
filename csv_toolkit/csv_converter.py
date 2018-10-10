@@ -1,11 +1,14 @@
+# -*- coding: utf-8 -*-
+
 import csv
 
-#---------------------------------------------------csv <--> dict--------------------------------------------
+# ---------------------------------------------------csv <--> dict------------------------------------------------------
 
-# convert csv file to dict
-# @params:
-# key/value: the column of original csv file to set as the key and value of dict
-def csv2dict(in_file,key,value):
+
+def csv_to_dict(in_file, key, value):
+    """
+    CSV文件首行为字段, 其余行为值的情形:
+    将CSV文件的某一字段作为key, 某一字段作为value, 返回字典对象 """
     new_dict = {}
     with open(in_file, 'rb') as f:
         reader = csv.reader(f, delimiter=',')
@@ -15,33 +18,59 @@ def csv2dict(in_file,key,value):
             new_dict[row[key]] = row[value]
     return new_dict
 
+# csv_to_dict('/Users/admin/Desktop/date.csv', 'asin', 'issued_at')    # 以asin字段为key, issued_at字段为value
+# 原CSV文件数据：
+# asin	        issued_at	                country
+# B07BF6YBHX	2018-09-01T00:00:00+00:00	US
+# B07DNV7D47	2017-05-14T00:00:00+00:00	US
+# B06Y13N3XN	2017-07-23T00:00:00+00:00	US
+# B07CKZ1M57	2011-12-21T00:00:00+00:00	US
+# 输出：
+# {'B06Y13N3XN': '2017-07-23T00:00:00+00:00',
+#  'B07BF6YBHX': '2018-09-01T00:00:00+00:00',
+#  'B07CKZ1M57': '2011-12-21T00:00:00+00:00',
+#  'B07DNV7D47': '2017-05-14T00:00:00+00:00'}
 
-# convert csv file to dict(key-value pairs each row)
-# default: set row[0] as key and row[1] as value of the dict
-def row_csv2dict(csv_file):
-    dict_club={}
+
+def row_csv_to_dict(csv_file, key_index=0, value_index=1):
+    """ 默认第一列为所构建的字典的key, 而第二列对应为value, 返回字典对象; """
+
+    dict_club = {}
     with open(csv_file)as f:
-        reader=csv.reader(f,delimiter=',')
+        reader = csv.reader(f, delimiter=',')
+        # next(reader)          # 注释掉则会返回 字段名
         for row in reader:
-            dict_club[row[0]]=row[1]
+            dict_club[row[key_index]] = row[value_index]
     return dict_club
 
-# write dict to csv file
-# write each key/value pair on a separate row
-def dict2csv(dict, file):
-    with open(file, 'wb') as f:
-        w = csv.writer(f)
-        # write each key/value pair on a separate row
-        w.writerows(dict.items())
 
-# write dict to csv file
-# write all keys on one row and all values on the next
-def dict2csv2(dict, file):
-    with open(file, 'wb') as f:
+def dict2csv(in_dict, out_file, first_column="first", second_column="second"):
+    """ 将字典对象写入CSV, key存在第一列, value存在第二列 """
+
+    with open(out_file, 'wb') as f:
         w = csv.writer(f)
-        # write all keys on one row and all values on the next
-        w.writerow(dict.keys())
-        w.writerow(dict.values())
+        w.writerows([(first_column, second_column)])      # 可自定义设定CSV文件字段名, 注释掉则不设字段名
+        w.writerows(in_dict.items())
+
+# dict2csv({'gg': 11, 'dd': 22}, '/Users/admin/Desktop/date.csv')
+# 输出CSV文件
+# gg  11
+# dd  22
+
+
+def dict2csv2(in_dict, out_file):
+    """ 将字典对象写入CSV, key存在第一行, value存在第二行 """
+
+    with open(out_file, 'wb') as f:
+        w = csv.writer(f)
+        w.writerow(in_dict.keys())
+        w.writerow(in_dict.values())
+
+# dict2csv2({'gg': 11, 'dd': 32}, '/Users/admin/Desktop/2.csv')
+# 输出CSV文件:
+# gg    dd
+# 11    22
+
 
 # build a dict of list like {key:[...element of lst_inner_value...]}
 # key is certain column name of csv file
