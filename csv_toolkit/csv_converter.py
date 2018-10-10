@@ -232,33 +232,38 @@ def build_level3_dict3(source_file,outer_key,inner_key1,inner_key2,inner_value):
     return new_dict
 
 
-#----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
 
-#---------------------------------------------------csv <--> list--------------------------------------------
+# ---------------------------------------------------csv <--> list------------------------------------------------------
 
-def list2csv(list, file):
-# def list2csv(list):
-#     wr = csv.writer(open(file, 'wb'), quoting=csv.QUOTE_ALL)
-    wr=open(file,'w')
-    for word in list:
-        # print ''.join(word)
-        # wr.writerow([word])
+def list_to_csv(in_list, out_file):
+    """ 将列表对象保存到CSV文件的第一列中 """
+    wr = open(out_file, 'w')
+    for word in in_list:
         wr.write(word+'\n')
-        # wr.writerow(str.split(word,'"')[0])
-        # print [word]
 
 # test_list = ['United States', 'China', 'America', 'England']
+# list_to_csv(test_list,'/Users/admin/Desktop/test.csv')
 
-# list2csv(test_list,'small_test.csv')
 
 # write nested list of dict to csv
-def nestedlist2csv(list, out_file):
+def nestedlist2csv(in_list, out_file):
+    """ 将列表字典对象写入csv文件 """
     with open(out_file, 'wb') as f:
         w = csv.writer(f)
-        fieldnames=list[0].keys()  # solve the problem to automatically write the header
+        fieldnames = in_list[0].keys()  # solve the problem to automatically write the header
         w.writerow(fieldnames)
-        for row in list:
+        for row in in_list:
             w.writerow(row.values())
+
+# in_list = [{'aa': 333, 'bb': 444}, {'bb': 66, 'aa': 55}]
+# out_file = '/Users/admin/Desktop/3.csv'
+# nestedlist2csv(in_list, out_file)
+# 输出CSV文件:
+# aa	bb
+# 333	444
+# 55	66
+
 
 # collect and convert the first column of csv file to list
 def csv2list(csv_file):
@@ -268,4 +273,4 @@ def csv2list(csv_file):
         for row in reader:
             lst.append(row[0])
     return list(set(lst))
-#----------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------
